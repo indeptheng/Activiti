@@ -48,48 +48,7 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.AdhocSubProcessActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryMessageEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundarySignalEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.EventSubProcessErrorStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.EventSubProcessMessageStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchMessageEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.NoneStartEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ParallelMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ReceiveTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ScriptTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SequentialMultiInstanceBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ServiceTaskDelegateExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ServiceTaskExpressionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.ShellActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.*;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegateFactory;
 import org.activiti.engine.impl.bpmn.helper.DefaultClassDelegateFactory;
@@ -252,6 +211,29 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     } catch (ClassNotFoundException e) {
       throw new ActivitiException("Could not find org.activiti.camel.CamelBehavior: ", e);
+    }
+  }
+  // Doing the same trick here for the Document Generator as was done with Mule and Camel, allows for freedom
+  // in using external dependencies within the DocumentActivityBehavior, return the base
+  // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
+  public ActivityBehavior createDocumentActivityBehavior(ServiceTask serviceTask) {
+    return createDocumentActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
+  }
+
+  public ActivityBehavior createDocumentActivityBehavior(SendTask sendTask) {
+    return createDocumentActivityBehavior(sendTask, sendTask.getFieldExtensions());
+  }
+
+  protected ActivityBehavior createDocumentActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions) {
+    try {
+
+      Class<?> theClass = Class.forName("org.activiti.document.DocumentActivityBehavior");
+      List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+      return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
+          theClass, fieldDeclarations);
+
+    } catch (ClassNotFoundException e) {
+      throw new ActivitiException("Could not find org.activiti.document.DocumentActivityBehavior: ", e);
     }
   }
 

@@ -183,6 +183,10 @@ function _drawServiceTask(element)
 	{
 		_drawMuleTaskIcon(paper, element.x + 4, element.y + 4);
 	}
+	else if (element.taskType === "document")
+	{
+		paper.image("../editor/editor-app/stencilsets/bpmn2.0/icons/documentTask.png", element.x + 4, element.y + 4, 16, 16);
+	}
     else if (element.taskType === "alfresco_publish")
     {
         _drawAlfrescoPublishTaskIcon(paper, element.x + 4, element.y + 4);

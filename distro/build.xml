@@ -173,6 +173,9 @@
 			<fileset dir="../modules/activiti-crystalball/target">
 				<include name="activiti-crystalball-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti-document-generator/target">
+				<include name="activiti-document-generator-*.jar" />
+			</fileset>
 		</copy>
 
 	</target>
