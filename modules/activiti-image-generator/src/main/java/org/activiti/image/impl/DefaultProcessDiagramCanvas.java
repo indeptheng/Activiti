@@ -121,7 +121,8 @@ public class DefaultProcessDiagramCanvas {
   protected static BufferedImage SHELL_TASK_IMAGE;
   protected static BufferedImage MULE_TASK_IMAGE;
   protected static BufferedImage CAMEL_TASK_IMAGE;
-  
+  protected static BufferedImage DOCUMENT_TASK_IMAGE;
+
   protected static BufferedImage TIMER_IMAGE;
   protected static BufferedImage COMPENSATE_THROW_IMAGE;
   protected static BufferedImage COMPENSATE_CATCH_IMAGE;
@@ -227,7 +228,8 @@ public class DefaultProcessDiagramCanvas {
       SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/shellTask.png", customClassLoader));
       CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/camelTask.png", customClassLoader));
       MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/muleTask.png", customClassLoader));
-      
+      DOCUMENT_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/documentTask.png", customClassLoader));
+
       TIMER_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/timer.png", customClassLoader));
       COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate-throw.png", customClassLoader));
       COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate.png", customClassLoader));
@@ -852,6 +854,10 @@ public class DefaultProcessDiagramCanvas {
   
   public void drawMuleTask(String name, GraphicInfo graphicInfo, double scaleFactor) {
     drawTask(MULE_TASK_IMAGE, name, graphicInfo, scaleFactor);
+  }
+
+  public void drawDocumentTask(String name, GraphicInfo graphicInfo, double scaleFactor) {
+    drawTask(DOCUMENT_TASK_IMAGE, name, graphicInfo, scaleFactor);
   }
 
   public void drawExpandedSubProcess(String name, GraphicInfo graphicInfo, Boolean isTriggeredByEvent, double scaleFactor) {

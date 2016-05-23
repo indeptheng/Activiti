@@ -143,6 +143,10 @@ public interface ActivityBehaviorFactory {
 
   public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 
+  public abstract ActivityBehavior createDocumentActivityBehavior(ServiceTask serviceTask);
+
+  public abstract ActivityBehavior createDocumentActivityBehavior(SendTask sendTask);
+
   public abstract BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
 
   public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);

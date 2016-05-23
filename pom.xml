@@ -303,6 +303,11 @@
         <artifactId>activiti-jmx</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-document-generator</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <!-- EMAIL -->
       <dependency>
         <groupId>org.apache.commons</groupId>
@@ -784,6 +789,7 @@
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-jmx</module>
         <module>modules/activiti-crystalball</module>
+        <module>modules/activiti-document-generator</module>
         <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
       <build>
@@ -933,6 +939,7 @@
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-crystalball</module>
         <module>modules/activiti-jmx</module>
+        <module>modules/activiti-document-generator</module>
         <module>tooling/archetypes/activiti-archetype-unittest</module>
       </modules>
     </profile>

@@ -240,6 +240,15 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask) {
     return wrappedActivityBehaviorFactory.createScriptTaskActivityBehavior(scriptTask);
   }
+  @Override
+  public ActivityBehavior createDocumentActivityBehavior(ServiceTask serviceTask) {
+    return wrappedActivityBehaviorFactory.createDocumentActivityBehavior(serviceTask);
+  }
+
+  @Override
+  public ActivityBehavior createDocumentActivityBehavior(SendTask sendTask) {
+    return wrappedActivityBehaviorFactory.createDocumentActivityBehavior(sendTask);
+  }
 
   @Override
   public ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway) {

@@ -402,7 +402,9 @@ public class RuntimeDisplayJsonClientResource {
                     
 					} else if ("mule".equals(serviceTask.getType())) {
                         elementNode.put("taskType", "mule");
-                    }
+					} else if ("document".equals(serviceTask.getType())) {
+						elementNode.put("taskType", "document");
+					}
 				}
 
 				if (propertyMappers.containsKey(className)) {

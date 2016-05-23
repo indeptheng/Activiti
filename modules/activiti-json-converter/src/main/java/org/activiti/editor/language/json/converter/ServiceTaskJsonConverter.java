@@ -69,6 +69,10 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
       setPropertyFieldValue(PROPERTY_MULETASK_PAYLOAD_EXPRESSION, "payloadExpression", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_MULETASK_RESULT_VARIABLE, "resultVariable", serviceTask, propertiesNode);
 
+    } else if ("document".equalsIgnoreCase(serviceTask.getType())) {
+      setPropertyFieldValue(PROPERTY_DOCUMENTTASK_INPUTFILE_VARIABLE, "inputfile", serviceTask, propertiesNode);
+      setPropertyFieldValue(PROPERTY_DOCUMENTTASK_OUTPUTFILE_VARIABLE, "outputfile", serviceTask, propertiesNode);
+
     } else {
 
       if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(serviceTask.getImplementationType())) {

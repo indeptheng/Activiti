@@ -104,6 +104,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         CallActivityJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
         CamelTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
         MuleTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
+        DocumentTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
         SendTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
 
         // gateways
@@ -173,6 +174,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         DI_RECTANGLES.add(STENCIL_TASK_USER);
         DI_RECTANGLES.add(STENCIL_TASK_CAMEL);
         DI_RECTANGLES.add(STENCIL_TASK_MULE);
+        DI_RECTANGLES.add(STENCIL_TASK_DOCUMENT);
         DI_RECTANGLES.add(STENCIL_TEXT_ANNOTATION);
 
         DI_GATEWAY.add(STENCIL_GATEWAY_EVENT);
