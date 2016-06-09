@@ -147,6 +147,10 @@ public interface ActivityBehaviorFactory {
 
   public abstract ActivityBehavior createDocumentActivityBehavior(SendTask sendTask);
 
+  public abstract ActivityBehavior createAlfrescoPublisherActivityBehavior(ServiceTask serviceTask);
+
+  public abstract ActivityBehavior createAlfrescoPublisherActivityBehavior(SendTask sendTask);
+
   public abstract BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
 
   public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);

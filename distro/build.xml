@@ -176,6 +176,9 @@
 			<fileset dir="../modules/activiti-document-generator/target">
 				<include name="activiti-document-generator-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti-alfresco-publisher/target">
+				<include name="activiti-alfresco-publisher-*.jar" />
+			</fileset>
 		</copy>
 
 	</target>

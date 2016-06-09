@@ -5,8 +5,11 @@
   {{content.name}}
 
   <div class="actions">
-    <a ng-show="content.contentAvailable && (!content.source)" target="_blank" download="{{content.name}}"
+    <a ng-show="(!content.link) && content.contentAvailable && (!content.source)" target="_blank" download="{{content.name}}"
        href="{{content.rawUrl}}" ng-click="$event.stopPropagation();"> <i
+            class="icon icon-download"></i></a>
+    <a ng-show="content.link" target="_blank" download="{{content.name}}"
+       href="{{content.linkUrl}}" ng-click="$event.stopPropagation();"> <i
             class="icon icon-download"></i></a>
     <a ng-show="!readOnly" ng-click="deleteContent(content); $event.preventDefault(); $event.stopPropagation();"><i
               class="icon icon-remove"></i></a>

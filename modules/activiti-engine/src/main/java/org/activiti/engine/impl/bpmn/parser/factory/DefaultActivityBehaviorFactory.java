@@ -237,6 +237,30 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
   }
 
+  // Doing the same trick here for the Alfresco Publisher as was done with Mule and Camel, allows for freedom
+  // in using external dependencies within the AlfrescoPublisherActivityBehavior, return the base
+  // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
+  public ActivityBehavior createAlfrescoPublisherActivityBehavior(ServiceTask serviceTask) {
+    return createAlfrescoPublisherActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
+  }
+
+  public ActivityBehavior createAlfrescoPublisherActivityBehavior(SendTask sendTask) {
+    return createAlfrescoPublisherActivityBehavior(sendTask, sendTask.getFieldExtensions());
+  }
+
+  protected ActivityBehavior createAlfrescoPublisherActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions) {
+    try {
+
+      Class<?> theClass = Class.forName("org.activiti.alfresco.AlfrescoPublisherActivityBehavior");
+      List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+      return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
+          theClass, fieldDeclarations);
+
+    } catch (ClassNotFoundException e) {
+      throw new ActivitiException("Could not find org.activiti.alfresco.AlfrescoPublisherActivityBehavior: ", e);
+    }
+  }
+
   private void addExceptionMapAsFieldDeclaration(List<FieldDeclaration> fieldDeclarations, List<MapExceptionEntry> mapExceptions) {
     FieldDeclaration exceptionMapsFieldDeclaration = new FieldDeclaration(EXCEPTION_MAP_FIELD, mapExceptions.getClass().toString(), mapExceptions);
     fieldDeclarations.add(exceptionMapsFieldDeclaration);
