@@ -4,16 +4,13 @@ import com.activiti.content.storage.api.ContentObject;
 import com.activiti.content.storage.fs.FileSystemContentStorage;
 import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.service.runtime.RelatedContentService;
-import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-
+import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.data.domain.Page;
 
@@ -37,6 +34,7 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
   private RelatedContentService relatedContentService;
   private FileSystemContentStorage contentStorage;
   private String scriptPath;
+  private String nodejsPath = "nodejs";
 
   public DocumentActivityBehavior() {
     try {
@@ -45,6 +43,7 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
       relatedContentService = applicationContext.getBean(RelatedContentService.class);
       contentStorage = (FileSystemContentStorage) relatedContentService.getContentStorage();
       copyScriptToLocalFilesystem();
+      setNodeJSPath();
     } catch (ClassNotFoundException e) {
       LOG.error("Could not load ApplicationConfiguration {}", e);
     }
@@ -86,7 +85,7 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
     try {
       LOG.info("Running nodejs docGenerator.js");
       LOG.info(json.toString());
-      String cmd = "echo '"+ json.toString() + "' | nodejs " + scriptPath;
+      String cmd = "echo '"+ json.toString() + "' | " + nodejsPath + " " + scriptPath;
       ShellCommandRunner.Result result = ShellCommandRunner.shellOut(cmd);
       success = true;
       StringBuilder builder = new StringBuilder();
@@ -185,6 +184,13 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
     File dir = new File(path);
     if (!dir.exists()) {
       dir.mkdir();
+    }
+  }
+
+  private void setNodeJSPath() {
+    String path = applicationContext.getEnvironment().getProperty("document.nodejs.path");
+    if (path != null) {
+      nodejsPath = path;
     }
   }
 }
