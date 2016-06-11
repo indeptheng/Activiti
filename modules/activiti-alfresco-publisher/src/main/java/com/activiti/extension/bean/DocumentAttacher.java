@@ -20,15 +20,8 @@ import org.slf4j.LoggerFactory;
 public class DocumentAttacher implements TaskListener {
   private static final Logger LOG = LoggerFactory.getLogger(DocumentAttacher.class);
 
-  // There are 2 ways a user can pass in the url, either the url directly,
-  // or the name of the variable containing the url
   private Expression url;
-  private Expression url_variable;
-
-  // There are 2 ways a user can pass in the name, either the name directly,
-  // or the name of the variable containing the name
   private Expression name;
-  private Expression name_variable;
 
   @Autowired
   private RelatedContentService relatedContentService;
@@ -46,8 +39,7 @@ public class DocumentAttacher implements TaskListener {
       relatedContent.setLinkUrl(fileUrl);
       relatedContentService.storeRelatedContent(relatedContent);
     } else {
-      LOG.warn("Could not create document link. Please make sure TaskListener Fields " +
-          "('url' or 'url_variable') and ('name' or 'name_variable') are set correctly.");
+      LOG.warn("Could not create document link. Please make sure TaskListener Fields 'url' and 'name' are set correctly.");
     }
   }
 
@@ -55,10 +47,10 @@ public class DocumentAttacher implements TaskListener {
     String fileUrl = null;
     if (url != null) {
       fileUrl = url.getValue(delegateTask.getExecution()).toString();
-    } else if (url_variable != null) {
-      fileUrl = delegateTask.getExecution().getVariable(
-          url_variable.getValue(delegateTask.getExecution()).toString()
-      ).toString();
+      Object fileUrlVar = delegateTask.getExecution().getVariable(fileUrl);
+      if (fileUrlVar != null) {
+        fileUrl = fileUrlVar.toString();
+      }
     }
     return fileUrl;
   }
@@ -67,10 +59,10 @@ public class DocumentAttacher implements TaskListener {
     String nameStr = null;
     if (name != null) {
       nameStr = name.getValue(delegateTask.getExecution()).toString();
-    } else if (name_variable != null) {
-      nameStr = delegateTask.getExecution().getVariable(
-          name_variable.getValue(delegateTask.getExecution()).toString()
-      ).toString();
+      Object nameStrVar = delegateTask.getExecution().getVariable(nameStr);
+      if (nameStrVar != null) {
+        nameStr = nameStrVar.toString();
+      }
     }
     return nameStr;
   }
