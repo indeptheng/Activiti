@@ -404,6 +404,8 @@ public class RuntimeDisplayJsonClientResource {
                         elementNode.put("taskType", "mule");
 					} else if ("document".equals(serviceTask.getType())) {
 						elementNode.put("taskType", "document");
+					} else if ("alfresco".equals(serviceTask.getType())) {
+						elementNode.put("taskType", "alfresco");
 					}
 				}
 

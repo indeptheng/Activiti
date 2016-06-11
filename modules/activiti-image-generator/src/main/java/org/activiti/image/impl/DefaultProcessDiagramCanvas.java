@@ -122,6 +122,7 @@ public class DefaultProcessDiagramCanvas {
   protected static BufferedImage MULE_TASK_IMAGE;
   protected static BufferedImage CAMEL_TASK_IMAGE;
   protected static BufferedImage DOCUMENT_TASK_IMAGE;
+  protected static BufferedImage ALFRESCO_TASK_IMAGE;
 
   protected static BufferedImage TIMER_IMAGE;
   protected static BufferedImage COMPENSATE_THROW_IMAGE;
@@ -229,6 +230,7 @@ public class DefaultProcessDiagramCanvas {
       CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/camelTask.png", customClassLoader));
       MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/muleTask.png", customClassLoader));
       DOCUMENT_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/documentTask.png", customClassLoader));
+      ALFRESCO_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/alfrescoTask.png", customClassLoader));
 
       TIMER_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/timer.png", customClassLoader));
       COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate-throw.png", customClassLoader));
@@ -858,6 +860,10 @@ public class DefaultProcessDiagramCanvas {
 
   public void drawDocumentTask(String name, GraphicInfo graphicInfo, double scaleFactor) {
     drawTask(DOCUMENT_TASK_IMAGE, name, graphicInfo, scaleFactor);
+  }
+
+  public void drawAlfrescoTask(String name, GraphicInfo graphicInfo, double scaleFactor) {
+    drawTask(ALFRESCO_TASK_IMAGE, name, graphicInfo, scaleFactor);
   }
 
   public void drawExpandedSubProcess(String name, GraphicInfo graphicInfo, Boolean isTriggeredByEvent, double scaleFactor) {

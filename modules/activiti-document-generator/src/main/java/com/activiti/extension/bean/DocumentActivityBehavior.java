@@ -1,29 +1,27 @@
-package org.activiti.document;
+package com.activiti.extension.bean;
 
 import com.activiti.content.storage.api.ContentObject;
 import com.activiti.content.storage.fs.FileSystemContentStorage;
 import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.service.runtime.RelatedContentService;
-import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
-
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.List;
 
-/**
- * @author Jonathan Mulieri
- */
-public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
+@Component("documentActivityBehavior")
+public class DocumentActivityBehavior implements JavaDelegate {
+
   private static final long serialVersionUID = 1L;
 
   private static final Logger LOG         = LoggerFactory.getLogger(DocumentActivityBehavior.class);
@@ -33,25 +31,23 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
   protected Expression inputfile;
   protected Expression outputfile;
 
-  private AnnotationConfigApplicationContext applicationContext;
-  private RelatedContentService relatedContentService;
-  private FileSystemContentStorage contentStorage;
   private String scriptPath;
+  private String nodejsPath = "nodejs";
+  private Boolean setupComplete = false;
 
-  public DocumentActivityBehavior() {
-    try {
-      Class<?> theClass = Class.forName("com.activiti.conf.ApplicationConfiguration");
-      applicationContext = new AnnotationConfigApplicationContext(theClass);
-      relatedContentService = applicationContext.getBean(RelatedContentService.class);
-      contentStorage = (FileSystemContentStorage) relatedContentService.getContentStorage();
-      copyScriptToLocalFilesystem();
-    } catch (ClassNotFoundException e) {
-      LOG.error("Could not load ApplicationConfiguration {}", e);
-    }
-  }
+  @Autowired
+  private RelatedContentService relatedContentService;
+
+  @Autowired
+  private Environment environment;
+
+  public DocumentActivityBehavior() { }
 
   @Override
   public void execute(DelegateExecution execution) {
+    setup();
+    FileSystemContentStorage contentStorage = (FileSystemContentStorage) relatedContentService.getContentStorage();
+
     // Get variable names for input(template) and output(generated) files
     String inputFileField = inputfile.getValue(execution).toString();
     String outputFileField = outputfile.getValue(execution).toString();
@@ -84,9 +80,8 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
   private boolean runDocumentTemplater(JSONObject json) {
     boolean success;
     try {
-      LOG.info("Running nodejs docGenerator.js");
-      LOG.info(json.toString());
-      String cmd = "echo '"+ json.toString() + "' | nodejs " + scriptPath;
+      String cmd = "echo '"+ json.toString() + "' | " + nodejsPath + " " + scriptPath;
+      LOG.info("Running " + cmd);
       ShellCommandRunner.Result result = ShellCommandRunner.shellOut(cmd);
       success = true;
       StringBuilder builder = new StringBuilder();
@@ -106,7 +101,7 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
     return success;
   }
 
-  private void createRelatedContentForGeneratedOutput(DelegateExecution execution, RelatedContent content, String field, String filePath) {
+  protected void createRelatedContentForGeneratedOutput(DelegateExecution execution, RelatedContent content, String field, String filePath) {
     try {
       File generatedFile = new File(filePath);
       FileInputStream generatedFileStream = new FileInputStream(generatedFile);
@@ -185,6 +180,21 @@ public class DocumentActivityBehavior extends AbstractBpmnActivityBehavior {
     File dir = new File(path);
     if (!dir.exists()) {
       dir.mkdir();
+    }
+  }
+
+  private void setNodeJSPath() {
+    String path = environment.getProperty("document.nodejs.path");
+    if (path != null) {
+      nodejsPath = path;
+    }
+  }
+
+  private void setup() {
+    if (!setupComplete) {
+      copyScriptToLocalFilesystem();
+      setNodeJSPath();
+      setupComplete = true;
     }
   }
 }

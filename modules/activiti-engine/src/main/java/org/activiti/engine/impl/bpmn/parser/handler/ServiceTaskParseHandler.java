@@ -52,6 +52,9 @@ public class ServiceTaskParseHandler extends AbstractActivityBpmnParseHandler<Se
       } else if (serviceTask.getType().equalsIgnoreCase("document")) {
         serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createDocumentActivityBehavior(serviceTask));
 
+      } else if (serviceTask.getType().equalsIgnoreCase("alfresco")) {
+        serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createAlfrescoPublisherActivityBehavior(serviceTask));
+
       } else {
         logger.warn("Invalid service task type: '" + serviceTask.getType() + "' " + " for service task " + serviceTask.getId());
       }

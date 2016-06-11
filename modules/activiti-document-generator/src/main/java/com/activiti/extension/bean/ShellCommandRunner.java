@@ -1,4 +1,4 @@
-package org.activiti.document;
+package com.activiti.extension.bean;
 
 import java.io.BufferedReader;
 import java.io.IOException;

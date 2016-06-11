@@ -227,6 +227,9 @@ public class BpmnDisplayJsonConverter {
                     } else if ("document".equals(serviceTask.getType())) {
                         elementNode.put("taskType", "document");
 
+                    } else if ("alfresco".equals(serviceTask.getType())) {
+                        elementNode.put("taskType", "alfresco");
+
                     }
                 }
 

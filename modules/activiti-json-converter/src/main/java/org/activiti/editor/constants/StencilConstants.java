@@ -48,6 +48,7 @@ public interface StencilConstants {
   final String STENCIL_TASK_MULE = "MuleTask";
   final String STENCIL_TASK_SHELL = "ShellTask";
   final String STENCIL_TASK_DOCUMENT = "DocumentTask";
+  final String STENCIL_TASK_ALFRESCO = "AlfrescoTask";
 
   final String STENCIL_GATEWAY_EXCLUSIVE = "ExclusiveGateway";
   final String STENCIL_GATEWAY_PARALLEL = "ParallelGateway";
@@ -221,6 +222,9 @@ public interface StencilConstants {
 
   final String PROPERTY_DOCUMENTTASK_INPUTFILE_VARIABLE = "documentinputfilevariable";
   final String PROPERTY_DOCUMENTTASK_OUTPUTFILE_VARIABLE = "documentoutputfilevariable";
+
+  final String PROPERTY_ALFRESCOTASK_INPUTFILE_VARIABLE = "alfrescoinputfilesvariable";
+  final String PROPERTY_ALFRESCOTASK_DESTINATIONDIR_VARIABLE = "alfrescodestinationdirvariable";
 
   final String PROPERTY_SEQUENCEFLOW_DEFAULT = "defaultflow";
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";
