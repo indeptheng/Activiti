@@ -1,4 +1,4 @@
-package org.activiti.alfresco;
+package com.activiti.extension.bean;
 
 import com.activiti.content.storage.api.ContentObject;
 import com.activiti.content.storage.fs.FileSystemContentStorage;
@@ -6,17 +6,16 @@ import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.service.runtime.RelatedContentService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +23,11 @@ import java.util.Map;
 /**
  * @author Jonathan Mulieri
  */
-public class AlfrescoPublisherActivityBehavior extends AbstractBpmnActivityBehavior {
+@Component("alfrescoPublisherActivityBehavior")
+public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
+
   private static final long serialVersionUID            = 1L;
+
   private static final Logger LOG                       = LoggerFactory.getLogger(AlfrescoPublisherActivityBehavior.class);
   private static final String ALL_CONTENT               = "ALL_CONTENT";
   private static final String ALFRESCO_DESTINATION_PATH = "alfresco_destination_path";
@@ -34,30 +36,27 @@ public class AlfrescoPublisherActivityBehavior extends AbstractBpmnActivityBehav
   protected Expression inputfiles;
   protected Expression destinationdir;
 
-  private AnnotationConfigApplicationContext applicationContext;
+  @Autowired
   private RelatedContentService relatedContentService;
-  private FileSystemContentStorage contentStorage;
-  private Map<String, String> alfrescoCredentials;
 
-  public AlfrescoPublisherActivityBehavior() {
-    try {
-      Class<?> theClass = Class.forName("com.activiti.conf.ApplicationConfiguration");
-      applicationContext = new AnnotationConfigApplicationContext(theClass);
-      relatedContentService = applicationContext.getBean(RelatedContentService.class);
-      contentStorage = (FileSystemContentStorage) relatedContentService.getContentStorage();
-      setAlfrescoCredentials(applicationContext.getEnvironment());
-    } catch (ClassNotFoundException e) {
-      LOG.error("Could not load ApplicationConfiguration", e);
-    }
-  }
+  @Autowired
+  private Environment environment;
+
+  private Map<String, String> alfrescoCredentials;
+  private Boolean setupComplete = false;
+
+  public AlfrescoPublisherActivityBehavior() { }
 
   @Override
   public void execute(DelegateExecution execution) {
+    setup();
     // Get variable names for input files and alfresco destination directory
     String inputFileVariables = inputfiles.getValue(execution).toString();
     String destinationDirPath = getDestinationDir(execution);
     LOG.info("inputfiles="+inputFileVariables);
     LOG.info("destinationdir="+destinationDirPath);
+
+    FileSystemContentStorage contentStorage = (FileSystemContentStorage) relatedContentService.getContentStorage();
 
     AlfrescoConnector alfrescoConnector = new AlfrescoConnector(alfrescoCredentials);
     Folder folder = alfrescoConnector.getFolder(destinationDirPath);
@@ -87,7 +86,6 @@ public class AlfrescoPublisherActivityBehavior extends AbstractBpmnActivityBehav
           }
         }
       }
-      leave(execution);
     } else {
       LOG.error("Could not find folder with path", destinationDirPath);
     }
@@ -106,7 +104,15 @@ public class AlfrescoPublisherActivityBehavior extends AbstractBpmnActivityBehav
     return destinationDir;
   }
 
-  private void setAlfrescoCredentials(ConfigurableEnvironment environment) {
+  private void setup() {
+    if (!setupComplete) {
+      setAlfrescoCredentials();
+      setupComplete = true;
+    }
+
+  }
+
+  private void setAlfrescoCredentials() {
     alfrescoCredentials = new HashMap<String, String>();
     alfrescoCredentials.put("user",     environment.getProperty("alfresco.cmis.user"));
     alfrescoCredentials.put("password", environment.getProperty("alfresco.cmis.password"));

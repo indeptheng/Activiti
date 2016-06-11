@@ -247,18 +247,8 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
-  public ActivityBehavior createDocumentActivityBehavior(SendTask sendTask) {
-    return wrappedActivityBehaviorFactory.createDocumentActivityBehavior(sendTask);
-  }
-
-  @Override
   public ActivityBehavior createAlfrescoPublisherActivityBehavior(ServiceTask serviceTask) {
     return wrappedActivityBehaviorFactory.createAlfrescoPublisherActivityBehavior(serviceTask);
-  }
-
-  @Override
-  public ActivityBehavior createAlfrescoPublisherActivityBehavior(SendTask sendTask) {
-    return wrappedActivityBehaviorFactory.createAlfrescoPublisherActivityBehavior(sendTask);
   }
 
   @Override

@@ -213,52 +213,17 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       throw new ActivitiException("Could not find org.activiti.camel.CamelBehavior: ", e);
     }
   }
-  // Doing the same trick here for the Document Generator as was done with Mule and Camel, allows for freedom
-  // in using external dependencies within the DocumentActivityBehavior, return the base
-  // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
+
   public ActivityBehavior createDocumentActivityBehavior(ServiceTask serviceTask) {
-    return createDocumentActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
+    Expression delegateExpression = expressionManager.createExpression("${documentActivityBehavior}");
+    return new ServiceTaskDelegateExpressionActivityBehavior(serviceTask.getId(), delegateExpression,
+        getSkipExpressionFromServiceTask(serviceTask), createFieldDeclarations(serviceTask.getFieldExtensions()));
   }
 
-  public ActivityBehavior createDocumentActivityBehavior(SendTask sendTask) {
-    return createDocumentActivityBehavior(sendTask, sendTask.getFieldExtensions());
-  }
-
-  protected ActivityBehavior createDocumentActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions) {
-    try {
-
-      Class<?> theClass = Class.forName("org.activiti.document.DocumentActivityBehavior");
-      List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
-      return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
-          theClass, fieldDeclarations);
-
-    } catch (ClassNotFoundException e) {
-      throw new ActivitiException("Could not find org.activiti.document.DocumentActivityBehavior: ", e);
-    }
-  }
-
-  // Doing the same trick here for the Alfresco Publisher as was done with Mule and Camel, allows for freedom
-  // in using external dependencies within the AlfrescoPublisherActivityBehavior, return the base
-  // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
   public ActivityBehavior createAlfrescoPublisherActivityBehavior(ServiceTask serviceTask) {
-    return createAlfrescoPublisherActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
-  }
-
-  public ActivityBehavior createAlfrescoPublisherActivityBehavior(SendTask sendTask) {
-    return createAlfrescoPublisherActivityBehavior(sendTask, sendTask.getFieldExtensions());
-  }
-
-  protected ActivityBehavior createAlfrescoPublisherActivityBehavior(TaskWithFieldExtensions task, List<FieldExtension> fieldExtensions) {
-    try {
-
-      Class<?> theClass = Class.forName("org.activiti.alfresco.AlfrescoPublisherActivityBehavior");
-      List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
-      return (ActivityBehavior) ClassDelegate.defaultInstantiateDelegate(
-          theClass, fieldDeclarations);
-
-    } catch (ClassNotFoundException e) {
-      throw new ActivitiException("Could not find org.activiti.alfresco.AlfrescoPublisherActivityBehavior: ", e);
-    }
+    Expression delegateExpression = expressionManager.createExpression("${alfrescoPublisherActivityBehavior}");
+    return new ServiceTaskDelegateExpressionActivityBehavior(serviceTask.getId(), delegateExpression,
+        getSkipExpressionFromServiceTask(serviceTask), createFieldDeclarations(serviceTask.getFieldExtensions()));
   }
 
   private void addExceptionMapAsFieldDeclaration(List<FieldDeclaration> fieldDeclarations, List<MapExceptionEntry> mapExceptions) {
