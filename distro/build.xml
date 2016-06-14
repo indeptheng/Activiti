@@ -179,6 +179,9 @@
 			<fileset dir="../modules/activiti-alfresco-publisher/target">
 				<include name="activiti-alfresco-publisher-*.jar" />
 			</fileset>
+			<fileset dir="../modules/activiti-iec-extensions/target">
+				<include name="activiti-iec-extensions-*.jar" />
+			</fileset>
 		</copy>
 
 	</target>

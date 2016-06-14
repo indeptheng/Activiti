@@ -85,6 +85,10 @@
             <groupId>org.activiti</groupId>
             <artifactId>activiti-alfresco-publisher</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-iec-extensions</artifactId>
+        </dependency>
 
 		<dependency>
             <groupId>com.h2database</groupId>
