@@ -35,6 +35,7 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
 
   protected Expression inputfiles;
   protected Expression destinationdir;
+  protected Expression updateExisting;
 
   @Autowired
   private RelatedContentService relatedContentService;
@@ -78,8 +79,15 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
             LOG.info("Found content, storing in Alfresco with path {}", destinationDirPath);
             ContentObject contentObject = contentStorage.getContentObject(content.getContentStoreId());
             try {
-              Document document = alfrescoConnector.createDocument(folder, content.getName(), content.getMimeType(), contentObject.getContent());
-              execution.setVariable(ALFRESCO_FILE_URL, document.getContentUrl());
+              Document document = null;
+              if (updateExisting != null && updateExisting.getValue(execution) != null) {
+                document = alfrescoConnector.updateDocument(folder, content.getName(), content.getMimeType(), contentObject.getContent());
+              } else {
+                document = alfrescoConnector.createDocument(folder, content.getName(), content.getMimeType(), contentObject.getContent());
+              }
+              if (document != null) {
+                execution.setVariable(ALFRESCO_FILE_URL, getAlfrescoFileUrl(document));
+              }
             } catch (Exception e) {
               LOG.error("Error creating document in Alfresco", e);
             }
@@ -89,6 +97,15 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
     } else {
       LOG.error("Could not find folder with path", destinationDirPath);
     }
+  }
+
+  private String getAlfrescoFileUrl(Document document) {
+    String url = document.getContentUrl();
+    int versionStartIdx = url.lastIndexOf("%3B");
+    if (versionStartIdx != -1) {
+      url = url.substring(0, versionStartIdx);
+    }
+    return url;
   }
 
   private String getDestinationDir(DelegateExecution execution) {

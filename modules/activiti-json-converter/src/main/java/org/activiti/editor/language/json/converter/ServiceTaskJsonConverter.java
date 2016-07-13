@@ -77,6 +77,7 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
     } else if ("alfresco".equalsIgnoreCase(serviceTask.getType())) {
       setPropertyFieldValue(PROPERTY_ALFRESCOTASK_INPUTFILE_VARIABLE, "inputfiles", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_ALFRESCOTASK_DESTINATIONDIR_VARIABLE, "destinationdir", serviceTask, propertiesNode);
+      setPropertyFieldValue(PROPERTY_ALFRESCOTASK_UPDATEEXISTING_VARIABLE, "updateExisting", serviceTask, propertiesNode);
 
     } else {
 

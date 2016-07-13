@@ -64,6 +64,25 @@ public class AlfrescoConnector {
     return folder.createDocument(docProps, contentStream, VersioningState.MAJOR);
   }
 
+  public Document updateDocument(Folder folder, String filename, String mimeType, InputStream in) throws Exception {
+    if (!folderContainsFile(folder, filename)) {
+      return createDocument(folder, filename, mimeType, in);
+    } else {
+      Map<String, Object> docProps = new HashMap<String, Object>();
+      docProps.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
+      LOG.info("Updating file: '{}/{}'", folder.getPath(), filename);
+      docProps.put(PropertyIds.NAME, filename);
+
+      Document updatedDocument = null;
+      Document document = getFile(folder, filename);
+      if (document != null) {
+        ContentStream contentStream = session.getObjectFactory().createContentStream(filename, -1, mimeType, in);
+        updatedDocument = document.setContentStream(contentStream, true);
+      }
+      return updatedDocument;
+    }
+  }
+
   private String nextAvailableFilename(Folder folder, String filename) {
     int dupDocNum = 1;
     String availFilename = filename;
@@ -81,6 +100,15 @@ public class AlfrescoConnector {
       }
     }
     return false;
+  }
+
+  private Document getFile(Folder folder, String filename) {
+    for (CmisObject object : folder.getChildren()) {
+      if (filename.equals(object.getName()) && object.getType().isFileable()) {
+        return (Document) object;
+      }
+    }
+    return null;
   }
 
   private void connect() {

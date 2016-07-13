@@ -226,6 +226,7 @@ public interface StencilConstants {
 
   final String PROPERTY_ALFRESCOTASK_INPUTFILE_VARIABLE = "alfrescoinputfilesvariable";
   final String PROPERTY_ALFRESCOTASK_DESTINATIONDIR_VARIABLE = "alfrescodestinationdirvariable";
+  final String PROPERTY_ALFRESCOTASK_UPDATEEXISTING_VARIABLE = "alfrescoupdateexistingvariable";
 
   final String PROPERTY_SEQUENCEFLOW_DEFAULT = "defaultflow";
   final String PROPERTY_SEQUENCEFLOW_CONDITION = "conditionsequenceflow";

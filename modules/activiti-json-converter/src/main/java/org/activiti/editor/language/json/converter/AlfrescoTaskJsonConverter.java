@@ -39,6 +39,7 @@ public class AlfrescoTaskJsonConverter extends BaseBpmnJsonConverter {
     task.setType("alfresco");
     addField("inputfiles", PROPERTY_ALFRESCOTASK_INPUTFILE_VARIABLE, elementNode, task);
     addField("destinationdir", PROPERTY_ALFRESCOTASK_DESTINATIONDIR_VARIABLE, elementNode, task);
+    addField("updateExisting", PROPERTY_ALFRESCOTASK_UPDATEEXISTING_VARIABLE, elementNode, task);
     return task;
   }
 }
