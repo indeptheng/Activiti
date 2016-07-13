@@ -10,7 +10,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
-import org.activiti.engine.impl.juel.ObjectValueExpression;
 import org.activiti.engine.impl.persistence.entity.VariableInstance;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.io.IOUtils;
@@ -40,6 +39,7 @@ public class DocumentActivityBehavior implements JavaDelegate {
   protected Expression inputfile;
   protected Expression outputfile;
   protected Expression sectionbreaks;
+  protected Expression outputfiletitle;
 
   private String scriptPath;
   private String nodejsPath = "nodejs";
@@ -190,12 +190,12 @@ public class DocumentActivityBehavior implements JavaDelegate {
 
   protected void createRelatedContentForGeneratedOutput(DelegateExecution execution, RelatedContent content, String field, String filePath) {
     try {
-      // TEMP - need to plumb in via Expression and add field to Task definition
-      String fileName = (String) execution.getVariable("doc_title");
-      if (fileName == null) {
-        fileName = content.getName();
-      } else {
-        fileName += ".docx";
+      String fileName = content.getName();
+      if (outputfiletitle != null) {
+        String specifiedFileName = (String) execution.getVariable((String) outputfiletitle.getValue(execution));
+        if (specifiedFileName != null) {
+          fileName = specifiedFileName + ".docx";
+        }
       }
 
       File generatedFile = new File(filePath);

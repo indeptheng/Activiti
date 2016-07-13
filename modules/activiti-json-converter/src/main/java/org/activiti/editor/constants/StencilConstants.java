@@ -222,6 +222,7 @@ public interface StencilConstants {
 
   final String PROPERTY_DOCUMENTTASK_INPUTFILE_VARIABLE = "documentinputfilevariable";
   final String PROPERTY_DOCUMENTTASK_OUTPUTFILE_VARIABLE = "documentoutputfilevariable";
+  final String PROPERTY_DOCUMENTTASK_OUTPUTFILETITLE_VARIABLE = "documentoutputfiletitlevariable";
   final String PROPERTY_DOCUMENTTASK_SECTIONBREAK_VARIABLE = "documentomitsectionbreakvariable";
 
   final String PROPERTY_ALFRESCOTASK_INPUTFILE_VARIABLE = "alfrescoinputfilesvariable";
