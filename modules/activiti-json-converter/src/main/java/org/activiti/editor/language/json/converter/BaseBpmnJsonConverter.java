@@ -97,6 +97,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 stencilId = STENCIL_TASK_CAMEL;
             } else if ("mule".equalsIgnoreCase(serviceTask.getType())) {
                 stencilId = STENCIL_TASK_MULE;
+            } else if ("document".equalsIgnoreCase(serviceTask.getType())) {
+                stencilId = STENCIL_TASK_DOCUMENT;
+            } else if ("alfresco".equalsIgnoreCase(serviceTask.getType())) {
+                stencilId = STENCIL_TASK_ALFRESCO;
             } else {
                 stencilId = getStencilId(baseElement);
             }
