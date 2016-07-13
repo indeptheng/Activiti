@@ -57,7 +57,8 @@ public class ProcessStateInjector implements JavaDelegate {
     Iterator keys = processVariables.keys();
     while (keys.hasNext()) {
       String key = (String) keys.next();
-      Object val = processVariables.get(key);
+      JSONObject variable = (JSONObject) processVariables.get(key);
+      Object val = variable.get("value");
       if (val == null || val.equals(null)) {
         // val is null, check if there is a RelatedContent for this variable
         Page<RelatedContent> page = relatedContentService.getFieldContentForProcessInstance(
@@ -81,7 +82,15 @@ public class ProcessStateInjector implements JavaDelegate {
         }
         execution.setVariable(key, null);
       } else {
-        execution.setVariable(key, val);
+        try {
+          String type = (String) variable.get("type");
+          val = Class.forName(type).getConstructor(
+              new Class[] { String.class }).newInstance(new Object[]{ val.toString() }
+          );
+          execution.setVariable(key, val);
+        } catch (Exception e) {
+          execution.setVariable(key, val);
+        }
       }
     }
   }
