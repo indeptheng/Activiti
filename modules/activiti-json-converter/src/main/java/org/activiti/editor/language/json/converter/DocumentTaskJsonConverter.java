@@ -51,6 +51,7 @@ public class DocumentTaskJsonConverter extends BaseBpmnJsonConverter {
     task.setType("document");
     addField("inputfile", PROPERTY_DOCUMENTTASK_INPUTFILE_VARIABLE, elementNode, task);
     addField("outputfile", PROPERTY_DOCUMENTTASK_OUTPUTFILE_VARIABLE, elementNode, task);
+    addField("sectionbreaks", PROPERTY_DOCUMENTTASK_SECTIONBREAK_VARIABLE, elementNode, task);
     return task;
   }
 }

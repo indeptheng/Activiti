@@ -137,6 +137,12 @@
       <artifactId>activiti-app-logic</artifactId>
       <version>6.0.0.Beta3-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.aspose</groupId>
+      <artifactId>aspose-words</artifactId>
+      <version>16.4.0</version>
+      <classifier>jdk16</classifier>
+    </dependency>
   </dependencies>
 
   <profiles>

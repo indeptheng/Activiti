@@ -72,6 +72,7 @@ public class ServiceTaskJsonConverter extends BaseBpmnJsonConverter {
     } else if ("document".equalsIgnoreCase(serviceTask.getType())) {
       setPropertyFieldValue(PROPERTY_DOCUMENTTASK_INPUTFILE_VARIABLE, "inputfile", serviceTask, propertiesNode);
       setPropertyFieldValue(PROPERTY_DOCUMENTTASK_OUTPUTFILE_VARIABLE, "outputfile", serviceTask, propertiesNode);
+      setPropertyFieldValue(PROPERTY_DOCUMENTTASK_SECTIONBREAK_VARIABLE, "sectionbreaks", serviceTask, propertiesNode);
 
     } else if ("alfresco".equalsIgnoreCase(serviceTask.getType())) {
       setPropertyFieldValue(PROPERTY_ALFRESCOTASK_INPUTFILE_VARIABLE, "inputfiles", serviceTask, propertiesNode);
