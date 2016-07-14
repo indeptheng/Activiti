@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -76,6 +77,9 @@ public abstract class AbstractTaskFormResource {
 
     @Inject
     protected ObjectMapper objectMapper;
+
+    @Inject
+    protected RuntimeService runtimeService;
 
     public FormDefinitionRepresentation getTaskForm(String taskId) {
         HistoricTaskInstance task = permissionService.validateReadPermissionOnTask(SecurityUtils.getCurrentUserObject(), taskId);
@@ -167,6 +171,7 @@ public abstract class AbstractTaskFormResource {
                 }
                 
                 formProcessingService.storeSubmittedForm(form, task.getId(), task.getProcessInstanceId(), submittedFormValuesJson);
+                clearFormResetState(task.getExecutionId(), form.getId());
             }
             taskService.complete(taskId, variables);
 
@@ -205,5 +210,17 @@ public abstract class AbstractTaskFormResource {
         }
 
         return selectedField;
+    }
+
+  /**
+   * This method clears a process variable that is used to reset the values of a form.
+   * @param executionId
+   * @param formId
+   */
+    private void clearFormResetState(String executionId, Long formId) {
+        String resetVariable = "reset-form-" + formId;
+        if (runtimeService.getVariable(executionId, resetVariable) != null) {
+            runtimeService.removeVariable(executionId, resetVariable);
+        }
     }
 }

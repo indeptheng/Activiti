@@ -308,8 +308,9 @@ public class FormProcessingServiceImpl implements FormProcessingService {
                             FormFieldTypes.READONLY_TEXT.equals(formField.getType()) == false) {
 
                         Object variableValue = readFieldValue(formField.getId(), formField.getType(), variables);
-                        
-                        if (variableValue != null || FormFieldTypes.UPLOAD.equals(formField.getType())) {
+
+                        if ((variableValue != null || FormFieldTypes.UPLOAD.equals(formField.getType())) &&
+                            runtimeService.getVariable(task.getExecutionId(), "reset-form-"+form.getId()) == null) {
                             variableValue = getFormFieldValue(variableValue, formField, task.getProcessInstanceId());
                             formField.setValue(variableValue);
                         }
