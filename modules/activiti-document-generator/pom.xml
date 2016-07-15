@@ -181,4 +181,12 @@
       </plugin>
     </plugins>
   </reporting>
+  
+  <repositories>
+    <repository>
+      <id>AsposeJavaAPI</id>
+      <name>Aspose Java API</name>
+      <url>http://maven.aspose.com/artifactory/simple/ext-release-local/</url>
+    </repository>
+  </repositories>
 </project>
