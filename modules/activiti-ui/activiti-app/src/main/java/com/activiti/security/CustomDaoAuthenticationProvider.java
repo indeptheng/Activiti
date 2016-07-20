@@ -20,13 +20,26 @@ package com.activiti.security;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 
 
 /**
  * @author jbarrez
  */
 public class CustomDaoAuthenticationProvider extends DaoAuthenticationProvider {
-	
+	private LDAPPasswordEncoder ldapPasswordEncoder;
+
+	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		// During the authentication flow, the password encoder is called, this is where the LDAP
+		// authentication is performed and the username must be known... hackety hack
+		if (ldapPasswordEncoder != null) {
+			String username = (authentication.getPrincipal() == null) ? null : authentication.getName();
+			ldapPasswordEncoder.username = username;
+		}
+		return super.authenticate(authentication);
+	}
+
 	protected void additionalAuthenticationChecks(org.springframework.security.core.userdetails.UserDetails userDetails, 
 			org.springframework.security.authentication.UsernamePasswordAuthenticationToken authentication) throws org.springframework.security.core.AuthenticationException {
 		
@@ -39,9 +52,11 @@ public class CustomDaoAuthenticationProvider extends DaoAuthenticationProvider {
 			  throw new BadCredentialsException(messages.getMessage(
 	                    "AbstractUserDetailsAuthenticationProvider.badCredentials", "Bad credentials"));
 		}
-		
 		super.additionalAuthenticationChecks(userDetails, authentication);
 		
 	};
 
+	public void setLDAPPasswordEncoder(LDAPPasswordEncoder LDAPPasswordEncoder) {
+		this.ldapPasswordEncoder = LDAPPasswordEncoder;
+	}
 }

@@ -238,6 +238,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findUserByExternalIdFetchGroups(String externalId) { return userRepository.findByExternalIdFetchGroups(externalId); }
+
+    @Override
     public User findOrCreateUserByEmail(String email) {
         User user = findUserByEmail(email);
         if (user == null) {

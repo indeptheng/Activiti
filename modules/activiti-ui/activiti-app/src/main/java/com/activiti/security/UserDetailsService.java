@@ -69,6 +69,11 @@ public class UserDetailsService implements org.springframework.security.core.use
 
 		actualLogin = login.toLowerCase();
 		userFromDatabase = userService.findUserByEmailFetchGroups(actualLogin);
+		// If LDAP is being used, the username supplied is the externalId and not likely
+		//  the same as email, so lookup the user by externalId
+		if (userFromDatabase == null) {
+			userFromDatabase = userService.findUserByExternalIdFetchGroups(actualLogin);
+		}
 
         // Verify user
         if (userFromDatabase == null) {

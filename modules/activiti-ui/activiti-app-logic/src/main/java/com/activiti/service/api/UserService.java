@@ -64,6 +64,7 @@ public interface UserService {
 	
 	User findUserByEmailFetchGroups(String email);
 
+	User findUserByExternalIdFetchGroups(String externalId);
 	/**
 	 * Looks up a {@link User} by the email address.
 	 * When no user is found, a new user is created, with the status UserStatus.Pending.

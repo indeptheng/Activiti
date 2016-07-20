@@ -19,6 +19,7 @@ package com.activiti.conf;
 
 import javax.inject.Inject;
 
+import com.activiti.security.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +44,6 @@ import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter;
 
-import com.activiti.security.AjaxAuthenticationFailureHandler;
-import com.activiti.security.AjaxAuthenticationSuccessHandler;
-import com.activiti.security.AjaxLogoutSuccessHandler;
-import com.activiti.security.CustomDaoAuthenticationProvider;
-import com.activiti.security.CustomPersistentRememberMeServices;
-import com.activiti.security.Http401UnauthorizedEntryPoint;
 import com.activiti.web.CustomFormLoginConfig;
 
 /**
@@ -96,17 +91,31 @@ public class SecurityConfiguration {
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
-		return new StandardPasswordEncoder();
+		PasswordEncoder encoder;
+		if (isLDAPActive()) {
+			encoder = new LDAPPasswordEncoder();
+		} else {
+			encoder = new StandardPasswordEncoder();
+		}
+		return encoder;
 	}
 	
 	@Bean(name = "dbAuthenticationProvider")
 	public AuthenticationProvider dbAuthenticationProvider() {
 		CustomDaoAuthenticationProvider daoAuthenticationProvider = new CustomDaoAuthenticationProvider();
 		daoAuthenticationProvider.setUserDetailsService(userDetailsService());
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+		PasswordEncoder passwordEncoder = passwordEncoder();
+		if (isLDAPActive()) {
+			daoAuthenticationProvider.setLDAPPasswordEncoder((LDAPPasswordEncoder)passwordEncoder);
+		}
+		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
 		return daoAuthenticationProvider;
 	}
-	
+
+	private boolean isLDAPActive() {
+		return env.getProperty("ldap.authentication.active", Boolean.class, false);
+	}
+
 	//
 	// REGULAR WEBAP CONFIG
 	//
