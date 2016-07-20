@@ -42,6 +42,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select u from User u left join fetch u.groups where u.email = :email")
     User findByEmailFetchGroups(@Param("email") String email);
 
+    @Query("select u from User u left join fetch u.groups where u.externalId = :externalId")
+    User findByExternalIdFetchGroups(@Param("externalId") String externalId);
+
     @Query("select count(u.id) from User u")
     Long getUserCount();
     

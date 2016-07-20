@@ -133,6 +133,11 @@
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.apache.directory.api</groupId>
+      <artifactId>api-all</artifactId>
+      <version>1.0.0-M33</version>
+    </dependency>
+    <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-app-logic</artifactId>
       <version>6.0.0.Beta3-SNAPSHOT</version>
@@ -175,4 +180,12 @@
       </plugin>
     </plugins>
   </reporting>
+
+  <repositories>
+    <repository>
+      <id>ApacheDirectoryAPI</id>
+      <name>Apache Directory API</name>
+      <url>https://mvnrepository.com/artifact/org.apache.directory.api/api-ldap-client-api</url>
+    </repository>
+  </repositories>
 </project>

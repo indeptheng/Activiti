@@ -101,7 +101,10 @@ public class User implements Serializable {
     
     @Column(name="picture_image_id")
     private Long pictureImageId;
-    
+
+    @Column(name="external_id", nullable=true)
+    private String externalId;
+
     public Long getId() {
         return id;
     }
@@ -224,4 +227,12 @@ public class User implements Serializable {
     public String getFullName() {
         return StringUtils.join(new String[] {firstName, lastName}, ' ');
     }
+
+  public String getExternalId() {
+    return externalId;
+  }
+
+  public void setExternalId(String externalId) {
+    this.externalId = externalId;
+  }
 }
