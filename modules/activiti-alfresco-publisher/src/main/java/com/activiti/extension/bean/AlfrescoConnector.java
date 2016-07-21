@@ -77,7 +77,8 @@ public class AlfrescoConnector {
       Document document = getFile(folder, filename);
       if (document != null) {
         ContentStream contentStream = session.getObjectFactory().createContentStream(filename, -1, mimeType, in);
-        updatedDocument = document.setContentStream(contentStream, true);
+        document.setContentStream(contentStream, true);
+        updatedDocument = document.getAllVersions().get(0);
       }
       return updatedDocument;
     }
