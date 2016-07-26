@@ -34,11 +34,12 @@ import java.util.*;
 public class LDAPConnector {
   private static final Logger LOG = LoggerFactory.getLogger(LDAPConnector.class);
 
-  private static final String UID         = "uid";
-  private static final String COMMON_NAME = "cn";
-  private static final String FIRST_NAME  = "first_name";
-  private static final String LAST_NAME   = "last_name";
-  private static final String EMAIL       = "mail";
+  private static final String UID            = "uid";
+  private static final String COMMON_NAME    = "cn";
+  private static final String FIRST_NAME     = "first_name";
+  private static final String LAST_NAME      = "last_name";
+  private static final String EMAIL          = "mail";
+  private static final String ADMIN_USERNAME = "admin";
 
   private static final List<String> LDAP_FIELDS             = Arrays.asList(UID, COMMON_NAME, EMAIL);
   private static final String LDAP_ACTIVE                   = "ldap.authentication.active";
@@ -48,6 +49,8 @@ public class LDAPConnector {
   private static final int    LDAP_PORT_DEFAULT             = 389;
   private static final String LDAP_USERNAME_FORMAT          = "ldap.authentication.userNameFormat";
   private static final String LDAP_USERNAME_FORMAT_DEFAULT  = "uid=%s,ou=User,dc=example,dc=com";
+  private static final String LDAP_ADMIN_OBJECTNAME         = "ldap.authentication.adminObjectName";
+  private static final String LDAP_ADMIN_OBJECTNAME_DEFAULT = "uid=admin,ou=system";
   private static final String LDAP_PRINCIPAL                = "ldap.synchronization.java.naming.security.principal";
   private static final String LDAP_PRINCIPAL_DEFAULT        = "uid=admin,ou=system";
   private static final String LDAP_CREDENTIALS              = "ldap.synchronization.java.naming.security.credentials";
@@ -65,7 +68,13 @@ public class LDAPConnector {
   protected UserRepository userRepository;
 
   public boolean isValidPassword(String username, String password) {
-    LdapConnection connection = createConnection(getUserObjectName(username), password);
+    String userObjectName;
+    if (ADMIN_USERNAME.equals(username)) {
+      userObjectName = getAdminObjectName();
+    } else {
+      userObjectName = getUserObjectName(username);
+    }
+    LdapConnection connection = createConnection(userObjectName, password);
     boolean authenticated = connection.isAuthenticated();
     closeConnection(connection);
     return authenticated;
@@ -103,7 +112,7 @@ public class LDAPConnector {
     if (email != null) {
       User user = userRepository.findByEmail(email);
       if (user == null) {
-        user = userService.createNewUser(email, firstName, lastName, "", ""); // pwd and company left empty
+        user = userService.createNewUser(email, firstName, lastName, " ", ""); // pwd must not be empty, company is empty
         user.setExternalId(externalId);
         userRepository.save(user);
         LOG.info("LDAP user sync: created user {} - {} - {} {}", email, externalId, firstName, lastName);
@@ -111,6 +120,10 @@ public class LDAPConnector {
         user.setExternalId(externalId);
         userRepository.save(user);
         LOG.info("LDAP updated external_id={} for user={}", externalId, email);
+      } else if (user.getPassword() == null || user.getPassword().isEmpty()) {
+        user.setPassword(" "); // pwd cannot be empty
+        userRepository.save(user);
+        LOG.info("LDAP updated to non-empty pwd for user={}", email);
       } else {
         LOG.info("LDAP user already existed in Activiti... doing nothing");
       }
@@ -153,6 +166,10 @@ public class LDAPConnector {
 
   private String getUserFormat() {
     return environment.getProperty(LDAP_USERNAME_FORMAT, LDAP_USERNAME_FORMAT_DEFAULT);
+  }
+
+  private String getAdminObjectName() {
+    return environment.getProperty(LDAP_ADMIN_OBJECTNAME, LDAP_ADMIN_OBJECTNAME_DEFAULT);
   }
 
   private String getPrincipal() {
