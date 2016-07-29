@@ -4,24 +4,28 @@
     <div ng-switch-when="text" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <input id="{{activitiFieldIdPrefix + field.id}}" type="text" name="{{field.id}}" class="form-control" placeholder="{{field.placeholder}}" ng-model="field.value" ng-change="onFieldValueChange(field)" ng-blur="onFieldBlur(field)" ng-focus="onFieldFocus(field)" ng-required="field.required">
     </div>
 
     <div ng-switch-when="multi-line-text" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <textarea id="{{activitiFieldIdPrefix + field.id}}" name="{{field.id}}" class="form-control" placeholder="{{field.placeholder}}" ng-model="field.value" ng-change="onFieldValueChange(field)" ng-blur="onFieldBlur(field)" ng-focus="onFieldFocus(field)" ng-required="field.required"></textarea>
     </div>
 
     <div ng-switch-when="integer" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <input id="{{activitiFieldIdPrefix + field.id}}" type="text" name="{{field.id}}" class="form-control" placeholder="{{field.placeholder}}" ng-model="field.value" ng-change="onFieldValueChange(field)" ng-blur="onFieldBlur(field)" ng-focus="onFieldFocus(field)" number-input-check ng-required="field.required">
     </div>
 
     <div ng-switch-when="date" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
         <label class="control-label"><i class="glyphicon glyphicon-calendar"></i> {{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <span class="control-label" ng-if="field.acceptedFormat">({{field.acceptedFormat}})</span>
         <input id="{{activitiFieldIdPrefix + field.id}}" name="{{field.id}}" type="text" class="form-control" placeholder="{{field.placeholder}}" ng-model="field.value" ng-change="onFieldValueChange(field)" bs-datepicker restrict-input template="{{appResourceRoot}}views/templates/date-picker-template.html" data-container="body" data-date-format="d-M-yyyy" trigger="focus" autoclose="true" ng-required="field.required">
     </div>
@@ -31,11 +35,13 @@
             <input id="{{activitiFieldIdPrefix + field.id}}" type="checkbox" name="{{field.id}}" ng-model="field.value" ng-change="onFieldValueChange(field)" ng-blur="onFieldBlur(field)" ng-focus="onFieldFocus(field)" ng-required="field.required"> <span>{{field.name}}</span>
             <span class="marker" ng-if="field.required">*</span>
         </label>
+        <p class="form-field-description">{{field.description}}</p>
     </div>
 
     <div ng-switch-when="dropdown" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmptyDropdown(field)}">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <select id="{{activitiFieldIdPrefix + field.id}}" class="form-control" name="{{field.id}}"
                 ng-options="option.name for option in field.options" ng-model="field.value" ng-change="onFieldValueChange(field)" ng-blur="onFieldBlur(field)" ng-focus="onFieldFocus(field)" ng-required="field.required">
             <option style="display:none" value="">{{field.placeholder}}</option>
@@ -46,6 +52,7 @@
         <div>
             <label class="control-label">{{field.name}}</label>
             <span class="marker" ng-if="field.required">*</span>
+            <p class="form-field-description">{{field.description}}</p>
         </div>
         <div id="{{activitiFieldIdPrefix + field.id}}">
             <div ng-repeat="option in field.options" class="radio">
@@ -66,6 +73,7 @@
     <div ng-switch-when="people" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required && isEmpty(field)}">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <div id="{{activitiFieldIdPrefix + field.id}}" class="people-select">
             <ul class="simple-list">
                 <li class="action" select-people-popover popover-title="{{field.name}}" placement="bottom-left" on-people-selected="fieldPersonSelected(user, field)"
@@ -86,6 +94,7 @@
     <div ng-switch-when="functional-group" class="form-group" ng-show="field.isVisible" ng-class="{'has-error': field.required &&  isEmpty(field)}">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <div id="{{activitiFieldIdPrefix + field.id}}" class="people-select">
             <ul class="simple-list">
                 <li class="action" select-functional-group-popover popover-title="{{field.name}}" placement="bottom-left"
@@ -104,6 +113,7 @@
     <div ng-switch-when="upload" class="form-group" ng-class="{'has-error' : field.required && isEmpty(field)}" ng-show="field.isVisible">
         <label class="control-label">{{field.name}}</label>
         <span class="marker" ng-if="field.required">*</span>
+        <p class="form-field-description">{{field.description}}</p>
         <ul class="simple-list" ng-show="model.uploads[field.id].length > 0">
             <li ng-repeat="content in model.uploads[field.id]">
                 <i class="icon icon-{{content.simpleType}}"></i>

@@ -43,6 +43,7 @@ public class FormFieldRepresentation {
     protected boolean required;
     protected boolean readOnly;
     protected boolean overrideId;
+    protected String description;
     protected String placeholder;
     protected String optionType;
     protected Boolean hasEmptyValue; // Needs to be Boolean with a big B for backwards compatibility
@@ -138,6 +139,14 @@ public class FormFieldRepresentation {
 
     public void setOptions(List<OptionRepresentation> options) {
         this.options = options;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getPlaceholder() {

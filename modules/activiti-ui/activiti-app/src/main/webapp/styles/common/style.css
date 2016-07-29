@@ -50,6 +50,19 @@
     padding: 4px 8px;
 }
 
+.form-canvas .form-control, .form-wrapper .form-control {
+    min-width: 300px;
+    width: auto;
+}
+
+.form-field-description {
+    display: inline-table;
+    margin-left: 20px;
+    font-style: italic;
+    max-width: 380px;
+    font-size: 12px;
+}
+
 body,
 body pre {
     font-family: 'Lato', sans-serif;
@@ -1768,6 +1781,14 @@ h3+div > .dropzone {
 .form-field {
     overflow: auto;
     max-width: 100%;
+}
+
+li .form-field {
+    margin-top: 20px;
+}
+
+li:first-child .form-field {
+    margin-top: 0px;
 }
 
 .popover .form-field {
