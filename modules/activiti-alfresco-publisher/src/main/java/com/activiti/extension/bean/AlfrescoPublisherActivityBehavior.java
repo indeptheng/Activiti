@@ -2,6 +2,7 @@ package com.activiti.extension.bean;
 
 import com.activiti.content.storage.api.ContentObject;
 import com.activiti.content.storage.fs.FileSystemContentStorage;
+import com.activiti.domain.idm.User;
 import com.activiti.domain.runtime.RelatedContent;
 import com.activiti.service.runtime.RelatedContentService;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -43,6 +44,9 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
   @Autowired
   private Environment environment;
 
+  @Autowired
+  protected LDAPPasswordHasher ldapPasswordHasher;
+
   private Map<String, String> alfrescoCredentials;
   private Boolean setupComplete = false;
 
@@ -59,25 +63,27 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
 
     FileSystemContentStorage contentStorage = (FileSystemContentStorage) relatedContentService.getContentStorage();
 
-    AlfrescoConnector alfrescoConnector = new AlfrescoConnector(alfrescoCredentials);
-    Folder folder = alfrescoConnector.getFolder(destinationDirPath);
-    if (folder != null) {
-      if (inputFileVariables.equals(ALL_CONTENT)) {
-        // TODO - implement ALL_CONTENT for Alfresco publishing
-      } else {
-        String[] fileVariables = inputFileVariables.split(",");
-        for (String inputFile : fileVariables) {
-          LOG.info("Looking for content in {}", inputFile);
-          // Find template file stored as RelatedContent, query by field and process_id
-          Page<RelatedContent> page = relatedContentService.getFieldContentForProcessInstance(
-              execution.getProcessInstanceId(), inputFile, 1, 0);
+    if (inputFileVariables.equals(ALL_CONTENT)) {
+      // TODO - implement ALL_CONTENT for Alfresco publishing
+    } else {
+      String[] fileVariables = inputFileVariables.split(",");
+      for (String inputFile : fileVariables) {
+        LOG.info("Looking for content in {}", inputFile);
+        // Find template file stored as RelatedContent, query by field and process_id
+        Page<RelatedContent> page = relatedContentService.getFieldContentForProcessInstance(
+            execution.getProcessInstanceId(), inputFile, 1, 0);
 
-          // If there are multiple RelatedContent matching field and process_id, use first one
-          List<RelatedContent> contentList = page.getContent();
-          if (contentList.size() > 0) {
-            RelatedContent content = contentList.get(0);
-            LOG.info("Found content, storing in Alfresco with path {}", destinationDirPath);
-            ContentObject contentObject = contentStorage.getContentObject(content.getContentStoreId());
+        // If there are multiple RelatedContent matching field and process_id, use first one
+        List<RelatedContent> contentList = page.getContent();
+        if (contentList.size() > 0) {
+          RelatedContent content = contentList.get(0);
+          LOG.info("Found content, storing in Alfresco with path {}", destinationDirPath);
+          ContentObject contentObject = contentStorage.getContentObject(content.getContentStoreId());
+          User user = content.getCreatedBy();
+          setAlfrescoUserAndPassword(user);
+          AlfrescoConnector alfrescoConnector = new AlfrescoConnector(alfrescoCredentials);
+          Folder folder = alfrescoConnector.getFolder(destinationDirPath);
+          if (folder != null) {
             try {
               Document document = null;
               if (updateExisting != null && updateExisting.getValue(execution) != null) {
@@ -91,11 +97,12 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
             } catch (Exception e) {
               LOG.error("Error creating document in Alfresco", e);
             }
+          } else {
+            LOG.error("Could not find folder with path", destinationDirPath);
           }
+
         }
       }
-    } else {
-      LOG.error("Could not find folder with path", destinationDirPath);
     }
   }
 
@@ -127,6 +134,11 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
       setupComplete = true;
     }
 
+  }
+
+  private void setAlfrescoUserAndPassword(User user) {
+    alfrescoCredentials.put("user", user.getExternalId());
+    alfrescoCredentials.put("password", ldapPasswordHasher.decryptPassword(user.getPassword()));
   }
 
   private void setAlfrescoCredentials() {

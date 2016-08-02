@@ -67,6 +67,9 @@ public class LDAPConnector {
   @Autowired
   protected UserRepository userRepository;
 
+  @Autowired
+  protected LDAPPasswordHasher ldapPasswordHasher;
+
   public boolean isValidPassword(String username, String password) {
     String userObjectName;
     if (ADMIN_USERNAME.equals(username)) {
@@ -77,6 +80,9 @@ public class LDAPConnector {
     LdapConnection connection = createConnection(userObjectName, password);
     boolean authenticated = connection.isAuthenticated();
     closeConnection(connection);
+    if (authenticated) {
+      updateUserPassword(username, password);
+    }
     return authenticated;
   }
 
@@ -129,6 +135,18 @@ public class LDAPConnector {
       }
     } else {
       LOG.info("LDAP no email present on user {}... doing nothing", externalId);
+    }
+  }
+
+  private void updateUserPassword(String username, String password) {
+    User user = userRepository.findByExternalIdFetchGroups(username);
+    if (user != null) {
+      String newPassword = ldapPasswordHasher.encryptPassword(password);
+      if (newPassword != null && !user.getPassword().equals(newPassword)) {
+        user.setPassword(newPassword);
+        userRepository.save(user);
+        LOG.info("updating password hash for LDAP user {}", user.getExternalId());
+      }
     }
   }
 

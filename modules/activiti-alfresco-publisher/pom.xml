@@ -142,6 +142,10 @@
       <artifactId>chemistry-opencmis-client-impl</artifactId>
       <version>0.14.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-iec-extensions</artifactId>
+    </dependency>
   </dependencies>
 
   <profiles>
