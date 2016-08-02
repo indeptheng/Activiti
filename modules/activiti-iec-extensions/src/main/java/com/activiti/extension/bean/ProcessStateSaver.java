@@ -34,7 +34,9 @@ public class ProcessStateSaver implements JavaDelegate {
       LOG.info("Saving process state {} => {}", stateId, state.toString());
       processStateService.saveProcessState(execution.getProcessInstanceId(), stateId, state.toString());
     } else {
-      LOG.warn("Could not save process state, field processStateId was not set");
+      String msg = "Could not save process state, field processStateId was not set";
+      LOG.error(msg);
+      throw new RuntimeException(msg);
     }
   }
 
