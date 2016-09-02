@@ -8,6 +8,7 @@ import com.activiti.service.runtime.RelatedContentService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.ActivitiException;
 import org.apache.chemistry.opencmis.client.api.Document;
 import org.apache.chemistry.opencmis.client.api.Folder;
 import org.slf4j.Logger;
@@ -100,8 +101,11 @@ public class AlfrescoPublisherActivityBehavior implements JavaDelegate {
           } else {
             LOG.error("Could not find folder with path", destinationDirPath);
           }
-
-        }
+        } else {
+          String msg = "Could not find content in " + inputFile;
+          LOG.error(msg);
+          throw new ActivitiException(msg);
+	}
       }
     }
   }
